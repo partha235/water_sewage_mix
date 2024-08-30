@@ -1,0 +1,22 @@
+from machine import Pin,ADC
+from utime import sleep_ms
+
+# allotting pins
+pot=ADC(Pin(15,Pin.IN))  # turbidity sens pin
+buz=Pin(12,Pin.OUT)      # -ev pin of buzzer is connected
+led=Pin(33,Pin.OUT)      # built-in led for esp32 cam module
+
+
+while True:
+    buz.value(1)  # turn off buzzer 
+    led.value(1)  # turn off led
+    pot_v=pot.read_u16()
+    print("pot_v = ",pot_v)
+    x=int((pot_v/65535)*100)
+    if x<=30:          # x less than 30 to detect defect
+        buz.value(0)   # turn on buzzer
+        led.value(0)   # turn on led
+        sleep_ms(2000) # wait for 2 seconds
+    print(x)
+    sleep_ms(100)
+

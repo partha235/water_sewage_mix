@@ -1,0 +1,11 @@
+from machine import Pin,ADC
+from utime import sleep_ms
+pot=ADC(Pin(15,Pin.IN))
+while True:
+    pot_v=pot.read_u16()
+    print("pot_v = ",pot_v)
+    x=int((pot_v/65535)*100)
+    print(x)
+    sleep_ms(100)
+
+# x less than 30 to detect defect

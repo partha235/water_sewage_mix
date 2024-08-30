@@ -1,0 +1,31 @@
+from machine import Pin, ADC
+from time import sleep
+
+# Configure the ADC (Analog to Digital Converter) pin for the turbidity sensor
+turbidity_sensor = ADC(Pin(15))  # GPIO 34 as the analog input pin
+turbidity_sensor.atten(ADC.ATTN_11DB)  # Full range: 3.3v
+# Assuming your platform supports 16-bit ADC, which gives readings from 0 to 65535.
+
+def read_turbidity():
+    # Read the analog value from the turbidity sensor
+    analog_value = turbidity_sensor.read()
+    
+    # Convert the analog value to a voltage (assuming a 3.3V reference)
+    voltage = (analog_value / 65535.0) * 3.3
+    
+    # Calculate turbidity in NTU (this formula is sensor-specific and might need calibration)
+    # This is a basic example and should be adjusted based on your sensor's specifications.
+    turbidity_ntu = (2.5 - voltage) * 1000 / 3.3
+    
+    return turbidity_ntu, voltage
+
+while True:
+    # Get the turbidity value
+    turbidity_ntu, voltage = read_turbidity()
+    
+    # Print the readings
+    print("Turbidity (NTU): {:.2f}, Voltage: {:.2f} V".format(turbidity_ntu, voltage))
+    
+    # Wait before reading again
+    sleep(2)
+
